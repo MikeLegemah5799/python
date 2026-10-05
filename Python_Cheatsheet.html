@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Python Cheatsheet · Michael Legemah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&family=Raleway:ital,wght@0,500;0,700;0,800;1,500;1,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #2d2a2e;
+  --bg-deep:   #221f22;
+  --bg-card:   #3a3640;
+  --bg-surface:#332f34;
+  --border:    rgba(255,255,255,0.07);
+  --border-md: rgba(255,255,255,0.13);
+  --yellow:  #ffd866;
+  --pink:    #ff6188;
+  --cyan:    #78dce8;
+  --orange:  #fc9867;
+  --green:   #a9dc76;
+  --purple:  #ab9df2;
+  --text:    #fcfcfa;
+  --soft:    #c1b8c8;
+  --muted:   #78dce8;
+  --font-serif: 'Raleway', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:  'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans:  'Outfit', 'Segoe UI', Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { color-scheme: dark; } }
+:root[data-theme="dark"] { color-scheme: dark; }
+html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 84px); scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+*, *::before, *::after { box-sizing: inherit; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-sans); font-weight: 300; font-size: 17px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+a { color: var(--cyan); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+code { font-family: var(--font-mono); font-size: .86em; color: var(--cyan); background: rgba(120,220,232,.09); border-radius: 4px; padding: 1px 5px; }
+
+/* top bar */
+.topbar { border-bottom: 1px solid var(--border); background: var(--bg-deep); }
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-family: var(--font-serif); font-weight: 700; letter-spacing: .01em; }
+.brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border-md); display: grid; place-items: center; font-family: var(--font-mono); font-size: 13px; color: var(--yellow); }
+.topbar .status { font-family: var(--font-mono); font-size: 12.5px; color: var(--green); }
+
+/* hero */
+.hero { padding: 64px 0 40px; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 48px; align-items: start; }
+.kicker { font-family: var(--font-mono); font-size: 13px; color: var(--muted); margin: 0 0 18px; }
+h1 { font-family: var(--font-serif); font-weight: 800; font-size: clamp(40px, 6vw, 68px); line-height: 1.02; letter-spacing: -.02em; margin: 0 0 22px; }
+h1 em { font-style: italic; font-weight: 500; color: var(--yellow); }
+.thesis { font-family: var(--font-serif); font-weight: 500; font-style: italic; font-size: clamp(19px, 2vw, 22px); line-height: 1.45; border-left: 3px solid var(--green); padding-left: 16px; margin: 0 0 20px; max-width: 46ch; }
+.lede { color: var(--soft); max-width: 46ch; margin: 0 0 26px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--soft); padding: 0; margin: 0; list-style: none; }
+.legend li { display: flex; align-items: center; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--c, currentColor); }
+
+/* the one bold element: section map */
+.map { background: var(--bg-deep); border: 1px solid var(--border-md); border-radius: 14px; overflow: hidden; }
+.map-head, .tbl-head { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 12.5px; color: var(--soft); }
+.map-head i, .tbl-head i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+.fname { margin-left: 10px; }
+.map-body { padding: 8px 8px; }
+.toc-row { display: grid; grid-template-columns: 34px minmax(0,1fr) auto; gap: 10px; align-items: baseline; padding: 11px 12px; border-radius: 8px; text-decoration: none; color: var(--text); }
+.toc-row:hover { background: var(--bg-card); }
+.toc-row .k { font-family: var(--font-mono); font-size: 13px; color: var(--c); }
+.toc-row .v { font-family: var(--font-serif); font-weight: 700; font-size: 17px; }
+.toc-row .r { font-family: var(--font-mono); font-size: 12px; color: var(--soft); }
+.map-foot { padding: 10px 16px; border-top: 1px solid var(--border); font-size: 13px; color: var(--soft); }
+kbd { font-family: var(--font-mono); font-size: 11.5px; border: 1px solid var(--border-md); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--bg-card); color: var(--text); }
+@media (prefers-reduced-motion: no-preference) {
+  .toc-row { animation: slide .5s cubic-bezier(.2,.7,.2,1) both; }
+  .toc-row:nth-child(1){animation-delay:.15s}.toc-row:nth-child(2){animation-delay:.21s}.toc-row:nth-child(3){animation-delay:.27s}.toc-row:nth-child(4){animation-delay:.33s}.toc-row:nth-child(5){animation-delay:.39s}.toc-row:nth-child(6){animation-delay:.45s}.toc-row:nth-child(7){animation-delay:.51s}
+  @keyframes slide { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+}
+
+/* reminders */
+.reminders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding: 8px 0 40px; }
+.reminder { border-left: 3px solid var(--c, var(--purple)); background: var(--bg-surface); border-radius: 0 10px 10px 0; padding: 16px 20px; }
+.reminder h2 { font-family: var(--font-serif); font-size: 17px; font-weight: 700; margin: 0 0 4px; color: var(--c, var(--purple)); }
+.reminder p { margin: 0; color: var(--soft); font-size: 15.5px; }
+
+/* toolbar */
+.toolbar { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-block: 1px solid var(--border); padding-top: env(safe-area-inset-top, 0px); }
+.toolbar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding-block: 12px; }
+.toolbar input[type="search"] { flex: 1 1 260px; min-width: 0; background: var(--bg-deep); border: 1px solid var(--border-md); color: var(--text); border-radius: 8px; padding: 9px 12px; font: inherit; font-size: 15px; }
+.toolbar input::placeholder { color: #8f8599; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips-label { font-family: var(--font-mono); font-size: 12.5px; color: var(--soft); }
+.chip { color: var(--soft); border: 1px solid var(--border-md); border-radius: 999px; padding: 4px 11px; font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; }
+.chip:hover { color: var(--text); border-color: var(--c); }
+
+/* sections */
+main { padding-bottom: 56px; }
+.sec { padding: 52px 0 4px; }
+.sec-head { display: flex; gap: 18px; align-items: flex-start; margin-bottom: 22px; border-left: 3px solid var(--c); padding-left: 18px; }
+.sec-n { font-family: var(--font-mono); font-size: 14px; color: var(--c); padding-top: 9px; }
+.sec-head h2 { font-family: var(--font-serif); font-weight: 800; font-size: clamp(26px, 3.4vw, 34px); line-height: 1.15; margin: 0 0 4px; letter-spacing: -.01em; }
+.sec-head p { margin: 0; color: var(--soft); max-width: 64ch; }
+
+/* diagrams */
+.dia { margin: 0 0 24px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; padding: 18px 18px 12px; overflow-x: auto; }
+.dia svg { display: block; width: 100%; min-width: 640px; height: auto; }
+.dia figcaption { font-size: 14px; color: var(--soft); margin-top: 8px; }
+.bx { fill: var(--bg-deep); stroke-width: 1.5; }
+svg .t { font: 600 14px var(--font-sans); fill: var(--text); }
+svg .m { font: 400 12px var(--font-mono); fill: var(--text); }
+svg .s { font: 300 12.5px var(--font-sans); fill: var(--soft); }
+
+/* tables */
+.tbl { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin: 0 0 24px; }
+.tbl-head { background: var(--bg-deep); flex-wrap: wrap; }
+.tbl-head h3 { font-family: var(--font-serif); font-weight: 700; font-size: 16px; color: var(--c); margin: 0 0 0 12px; }
+.tbl-head .cnt { margin-left: auto; font-size: 12px; }
+.tbl-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead th { text-align: left; font-family: var(--font-mono); font-weight: 400; font-size: 12px; color: var(--muted); padding: 10px 16px; border-bottom: 1px solid var(--border-md); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--border); }
+tbody tr:last-child { border-bottom: 0; }
+tbody tr:hover { background: rgba(255,255,255,.02); }
+tbody th, tbody td { padding: 14px 16px; vertical-align: top; text-align: left; }
+tbody th { width: 21%; font-weight: 500; font-size: 15px; }
+.cd { width: 47%; position: relative; }
+.nt { width: 32%; color: var(--soft); font-size: 15px; line-height: 1.55; }
+.nm { display: block; }
+.badge { display: inline-block; margin-top: 6px; font-family: var(--font-mono); font-weight: 400; font-size: 11px; color: var(--c); border: 1px solid var(--c); border-radius: 4px; padding: 0 6px; }
+tr[data-v="v"], tr[data-v="b"] { box-shadow: inset 3px 0 0 var(--pink); }
+tr[data-v="s"], tr[data-v="f"] { box-shadow: inset 3px 0 0 var(--green); }
+pre { margin: 0; background: var(--bg-deep); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; overflow-x: auto; }
+pre code { display: block; background: none; padding: 0; font-size: 13px; line-height: 1.6; color: var(--text); white-space: pre; border-radius: 0; }
+.copy { position: absolute; top: 20px; right: 24px; font-family: var(--font-mono); font-size: 11px; color: var(--soft); background: var(--bg-card); border: 1px solid var(--border-md); border-radius: 5px; padding: 2px 8px; cursor: pointer; opacity: 0; transition: opacity .15s; }
+tr:hover .copy, .copy:focus-visible { opacity: 1; }
+.copy.done { color: var(--bg-deep); background: var(--green); border-color: var(--green); opacity: 1; }
+@media (hover: none) { .copy { opacity: 1; } }
+.tk-c { color: #8f8599; font-style: italic; } .tk-s { color: var(--yellow); } .tk-k { color: var(--pink); }
+.tk-n { color: var(--purple); } .tk-f { color: var(--green); } .tk-d { color: var(--orange); } .tk-b { color: var(--cyan); }
+
+.empty { display: none; text-align: center; color: var(--soft); padding: 32px; border: 1px dashed var(--border-md); border-radius: 14px; margin-top: 32px; }
+footer { border-top: 1px solid var(--border); background: var(--bg-deep); }
+footer .wrap { padding-block: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--soft); }
+footer a { color: var(--soft); }
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+  .reminders { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  thead { display: none; }
+  table, tbody, tr, tbody th, tbody td { display: block; width: auto; }
+  tbody th { padding: 14px 16px 6px; }
+  .cd { padding: 0 16px 8px; }
+  .copy { top: 6px; right: 26px; }
+  .nt { padding: 0 16px 14px; }
+}
+@media (max-width: 520px) {
+  body { font-size: 16px; }
+  .wrap { padding: 0 16px; }
+  .hero { padding-top: 40px; }
+  .topbar .status { display: none; }
+  .sec-head { padding-left: 12px; gap: 10px; }
+}
+@media print {
+  .toolbar, .copy { display: none; }
+  .sec { break-inside: avoid-page; }
+}
+
+</style>
+</head>
+<body>
+<header class="topbar"><div class="wrap">
+<a class="brand" href="https://mleg.tech" target="_blank" rel="noopener"><span class="brand-mark">ML</span>Michael Legemah</a>
+<span class="status">&gt;&gt;&gt; python_version = "3.12+"</span>
+</div></header>
+
+<section class="hero"><div class="wrap hero-grid">
+<div>
+<p class="kicker">python_cheatsheet.md · master reference</p>
+<h1>Python mechanics, <em>one lookup away</em></h1>
+<p class="thesis">Every row is a runnable snippet and a one-line reason. Search it, copy it, ship it.</p>
+<p class="lede">Built for an engineer who already thinks in code and needs the syntax, methods, and safe patterns at their fingertips. Seven sections, 180 snippets, three diagrams.</p>
+<ul class="legend">
+<li><span class="dot" style="background:var(--green)"></span>Secure / fix</li>
+<li><span class="dot" style="background:var(--pink)"></span>Vulnerable / bug</li>
+<li><span class="dot" style="background:var(--cyan)"></span>Inline code in notes</li>
+</ul>
+</div>
+<div class="map" aria-label="Section index">
+<div class="map-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">sections.py</span></div>
+<div class="map-body"><a class="toc-row" href="#env" style="--c:var(--cyan)"><span class="k">01</span><span class="v">Environment setup &amp; tooling</span><span class="r">21</span></a>
+<a class="toc-row" href="#data" style="--c:var(--yellow)"><span class="k">02</span><span class="v">Core data structures &amp; algorithms</span><span class="r">49</span></a>
+<a class="toc-row" href="#io" style="--c:var(--green)"><span class="k">03</span><span class="v">Modern pathlib &amp; file I/O</span><span class="r">30</span></a>
+<a class="toc-row" href="#oop" style="--c:var(--purple)"><span class="k">04</span><span class="v">Production object-oriented programming</span><span class="r">23</span></a>
+<a class="toc-row" href="#async" style="--c:var(--orange)"><span class="k">05</span><span class="v">Asynchronous programming with asyncio</span><span class="r">18</span></a>
+<a class="toc-row" href="#sec" style="--c:var(--pink)"><span class="k">06</span><span class="v">High-security code defenses</span><span class="r">21</span></a>
+<a class="toc-row" href="#gotchas" style="--c:var(--yellow)"><span class="k">07</span><span class="v">Critical logical pitfalls</span><span class="r">18</span></a></div>
+<div class="map-foot">Row counts shown at right. Press <kbd>/</kbd> to search.</div>
+</div>
+</div></section>
+
+<div class="wrap"><div class="reminders">
+<div class="reminder" style="--c:var(--green)"><h2>Stdlib first</h2><p><code>pathlib</code>, <code>collections</code>, <code>heapq</code>, <code>secrets</code>, and <code>asyncio</code> already solve most problems. Add a dependency only when they fall short.</p></div>
+<div class="reminder" style="--c:var(--cyan)"><h2>Validate at the boundary</h2><p>Treat every file, request, and environment variable as untrusted until it is parsed, typed, and checked.</p></div>
+<div class="reminder" style="--c:var(--yellow)"><h2>Read the note, then the code</h2><p>Each row's note names the failure mode. If a snippet looks odd, the note says why it is written that way.</p></div>
+</div></div>
+
+<nav class="toolbar" aria-label="Search and jump"><div class="wrap">
+<input type="search" id="q" placeholder="Search snippets, e.g. deque, timeout, shell=False" aria-label="Search the cheatsheet">
+<span class="chips-label" id="count" aria-live="polite"></span>
+<div class="chips"><a class="chip" href="#env" style="--c:var(--cyan)"><span class="dot"></span>01 Environment setup</a><a class="chip" href="#data" style="--c:var(--yellow)"><span class="dot"></span>02 Core data structures</a><a class="chip" href="#io" style="--c:var(--green)"><span class="dot"></span>03 Modern pathlib</a><a class="chip" href="#oop" style="--c:var(--purple)"><span class="dot"></span>04 Production object-oriented programming</a><a class="chip" href="#async" style="--c:var(--orange)"><span class="dot"></span>05 Asynchronous programming</a><a class="chip" href="#sec" style="--c:var(--pink)"><span class="dot"></span>06 High-security code defenses</a><a class="chip" href="#gotchas" style="--c:var(--yellow)"><span class="dot"></span>07 Critical logical pitfalls</a></div>
+</div></nav>
+
+<main class="wrap">
+<section class="sec" id="env" style="--c:var(--cyan)">
+<header class="sec-head"><span class="sec-n">01</span><div><h2>Environment setup &amp; tooling</h2><p>Isolate every project, pin its dependencies, and keep secrets out of source control.</p></div></header>
+<figure class="dia"><svg viewBox="0 0 920 150" role="img" aria-label="Virtual environment lifecycle: create, activate, install, run, deactivate">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--soft)"/></marker></defs>
+<g>
+<rect class="bx" x="10" y="30" width="164" height="92" rx="10" style="stroke:var(--cyan)"/><text class="t" x="92" y="54" text-anchor="middle" style="fill:var(--cyan)">1 · create</text><text class="m" x="92" y="78" text-anchor="middle">python -m venv</text><text class="m" x="92" y="96" text-anchor="middle">.venv</text>
+<rect class="bx" x="194" y="30" width="164" height="92" rx="10" style="stroke:var(--yellow)"/><text class="t" x="276" y="54" text-anchor="middle" style="fill:var(--yellow)">2 · activate</text><text class="m" x="276" y="78" text-anchor="middle">source</text><text class="m" x="276" y="96" text-anchor="middle">.venv/bin/activate</text>
+<rect class="bx" x="378" y="30" width="164" height="92" rx="10" style="stroke:var(--green)"/><text class="t" x="460" y="54" text-anchor="middle" style="fill:var(--green)">3 · install</text><text class="m" x="460" y="78" text-anchor="middle">pip install -r</text><text class="m" x="460" y="96" text-anchor="middle">requirements.txt</text>
+<rect class="bx" x="562" y="30" width="164" height="92" rx="10" style="stroke:var(--purple)"/><text class="t" x="644" y="54" text-anchor="middle" style="fill:var(--purple)">4 · run</text><text class="m" x="644" y="78" text-anchor="middle">python main.py</text><text class="m" x="644" y="96" text-anchor="middle">pytest</text>
+<rect class="bx" x="746" y="30" width="164" height="92" rx="10" style="stroke:var(--orange)"/><text class="t" x="828" y="54" text-anchor="middle" style="fill:var(--orange)">5 · deactivate</text><text class="m" x="828" y="78" text-anchor="middle">deactivate</text><text class="s" x="828" y="96" text-anchor="middle">back to system python</text>
+</g>
+<g stroke="var(--soft)" stroke-width="1.5" fill="none" marker-end="url(#ar)"><path d="M176 76H192"/><path d="M360 76H376"/><path d="M544 76H560"/><path d="M728 76H744"/></g>
+<text class="s" x="10" y="144">Windows: swap step 2 for .venv\Scripts\Activate.ps1</text>
+</svg><figcaption>Virtual environment lifecycle. Every project gets its own interpreter and its own site-packages.</figcaption></figure><div class="tbl" data-lang="sh">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">venv.sh</span><h3>Virtual environments with venv</h3><span class="cnt">10 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Create</span></th><td class="cd"><pre><code>python3 -m venv .venv</code></pre><button class="copy" type="button" aria-label="Copy snippet for Create">Copy</button></td><td class="nt">Builds an isolated interpreter and site-packages in ./.venv.</td></tr><tr data-v=""><th scope="row"><span class="nm">Create (Windows)</span></th><td class="cd"><pre><code>py -m venv .venv</code></pre><button class="copy" type="button" aria-label="Copy snippet for Create (Windows)">Copy</button></td><td class="nt">The py launcher picks an installed Python on Windows.</td></tr><tr data-v=""><th scope="row"><span class="nm">Activate · macOS / Linux</span></th><td class="cd"><pre><code>source .venv/bin/activate</code></pre><button class="copy" type="button" aria-label="Copy snippet for Activate · macOS / Linux">Copy</button></td><td class="nt">Prepends .venv/bin to PATH for this shell session.</td></tr><tr data-v=""><th scope="row"><span class="nm">Activate · Windows PowerShell</span></th><td class="cd"><pre><code>.venv\Scripts\Activate.ps1</code></pre><button class="copy" type="button" aria-label="Copy snippet for Activate · Windows PowerShell">Copy</button></td><td class="nt">If blocked, run <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code> once.</td></tr><tr data-v=""><th scope="row"><span class="nm">Activate · Windows cmd.exe</span></th><td class="cd"><pre><code>.venv\Scripts\activate.bat</code></pre><button class="copy" type="button" aria-label="Copy snippet for Activate · Windows cmd.exe">Copy</button></td><td class="nt">Same effect as above for the legacy command prompt.</td></tr><tr data-v=""><th scope="row"><span class="nm">Verify you are inside</span></th><td class="cd"><pre><code>python -c "import sys; print(sys.prefix != sys.base_prefix)"</code></pre><button class="copy" type="button" aria-label="Copy snippet for Verify you are inside">Copy</button></td><td class="nt"><code>True</code> means a venv is active.</td></tr><tr data-v=""><th scope="row"><span class="nm">Install from requirements</span></th><td class="cd"><pre><code>python -m pip install -r requirements.txt</code></pre><button class="copy" type="button" aria-label="Copy snippet for Install from requirements">Copy</button></td><td class="nt">Installs every pinned dependency into the active env.</td></tr><tr data-v=""><th scope="row"><span class="nm">Snapshot dependencies</span></th><td class="cd"><pre><code>python -m pip freeze &gt; requirements.txt</code></pre><button class="copy" type="button" aria-label="Copy snippet for Snapshot dependencies">Copy</button></td><td class="nt">Writes exact installed versions for reproducible builds.</td></tr><tr data-v=""><th scope="row"><span class="nm">Deactivate</span></th><td class="cd"><pre><code>deactivate</code></pre><button class="copy" type="button" aria-label="Copy snippet for Deactivate">Copy</button></td><td class="nt">Returns the shell to the system interpreter.</td></tr><tr data-v=""><th scope="row"><span class="nm">Delete and rebuild</span></th><td class="cd"><pre><code>rm -rf .venv &amp;&amp; python3 -m venv .venv</code></pre><button class="copy" type="button" aria-label="Copy snippet for Delete and rebuild">Copy</button></td><td class="nt">Envs are disposable; never commit or move them.</td></tr></tbody></table></div></div><div class="tbl" data-lang="sh">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">pip_env.sh</span><h3>Global vs local pip, and environment variables</h3><span class="cnt">11 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Which pip am I using?</span></th><td class="cd"><pre><code>python -m pip --version</code></pre><button class="copy" type="button" aria-label="Copy snippet for Which pip am I using?">Copy</button></td><td class="nt">Prints the pip path; <code>python -m pip</code> always binds to the active interpreter.</td></tr><tr data-v=""><th scope="row"><span class="nm">Global install (avoid)</span></th><td class="cd"><pre><code>python3 -m pip install requests</code></pre><button class="copy" type="button" aria-label="Copy snippet for Global install (avoid)">Copy</button></td><td class="nt">Outside a venv this touches system packages; modern distros block it (PEP 668).</td></tr><tr data-v=""><th scope="row"><span class="nm">User-level install</span></th><td class="cd"><pre><code>python3 -m pip install --user rich</code></pre><button class="copy" type="button" aria-label="Copy snippet for User-level install">Copy</button></td><td class="nt">Installs to your home directory, still shared across projects.</td></tr><tr data-v=""><th scope="row"><span class="nm">Local install with version bounds</span></th><td class="cd"><pre><code>python -m pip install "requests&gt;=2.32,&lt;3"</code></pre><button class="copy" type="button" aria-label="Copy snippet for Local install with version bounds">Copy</button></td><td class="nt">Quote specifiers so the shell does not treat &gt; as redirection.</td></tr><tr data-v=""><th scope="row"><span class="nm">Upgrade or inspect</span></th><td class="cd"><pre><code>python -m pip list --outdated</code></pre><button class="copy" type="button" aria-label="Copy snippet for Upgrade or inspect">Copy</button></td><td class="nt">Shows what can be upgraded inside the active env.</td></tr><tr data-v=""><th scope="row"><span class="nm">Uninstall</span></th><td class="cd"><pre><code>python -m pip uninstall -y requests</code></pre><button class="copy" type="button" aria-label="Copy snippet for Uninstall">Copy</button></td><td class="nt">Removes a package from the active env only.</td></tr><tr data-v=""><th scope="row"><span class="nm">.env file format</span></th><td class="cd"><pre><code>API_KEY=sk-demo
+DEBUG=1</code></pre><button class="copy" type="button" aria-label="Copy snippet for .env file format">Copy</button></td><td class="nt">Plain KEY=value lines, no spaces around =, never committed.</td></tr><tr data-v=""><th scope="row"><span class="nm">Load .env in code</span></th><td class="cd"><pre><code>import os
+from dotenv import load_dotenv
+load_dotenv()
+key = os.environ["API_KEY"]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Load .env in code">Copy</button></td><td class="nt">Needs <code>pip install python-dotenv</code>; indexing raises <code>KeyError</code> if missing.</td></tr><tr data-v=""><th scope="row"><span class="nm">Read with a default</span></th><td class="cd"><pre><code>debug = os.getenv("DEBUG", "0") == "1"</code></pre><button class="copy" type="button" aria-label="Copy snippet for Read with a default">Copy</button></td><td class="nt"><code>os.getenv</code> returns the default instead of raising.</td></tr><tr data-v=""><th scope="row"><span class="nm">Export for one shell</span></th><td class="cd"><pre><code>export API_KEY=sk-demo</code></pre><button class="copy" type="button" aria-label="Copy snippet for Export for one shell">Copy</button></td><td class="nt">PowerShell equivalent: <code>$env:API_KEY = "sk-demo"</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Ignore secrets and envs</span></th><td class="cd"><pre><code>printf ".venv/\n.env\n__pycache__/\n" &gt;&gt; .gitignore</code></pre><button class="copy" type="button" aria-label="Copy snippet for Ignore secrets and envs">Copy</button></td><td class="nt">Keeps environments and credentials out of git.</td></tr></tbody></table></div></div></section><section class="sec" id="data" style="--c:var(--yellow)">
+<header class="sec-head"><span class="sec-n">02</span><div><h2>Core data structures &amp; algorithms</h2><p>Methods you keep forgetting, the stdlib structures worth knowing, and three interview patterns.</p></div></header>
+<div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">lists.py</span><h3>Lists</h3><span class="cnt">11 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Add items</span></th><td class="cd"><pre><code>xs = [3, 1, 2]
+xs.append(4)
+xs.extend([5, 6])</code></pre><button class="copy" type="button" aria-label="Copy snippet for Add items">Copy</button></td><td class="nt"><code>append</code> adds one item, <code>extend</code> adds many.</td></tr><tr data-v=""><th scope="row"><span class="nm">Insert and remove</span></th><td class="cd"><pre><code>xs.insert(0, 9)
+xs.pop()
+xs.pop(0)
+xs.remove(9)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Insert and remove">Copy</button></td><td class="nt"><code>pop(0)</code> is O(n); <code>remove</code> raises <code>ValueError</code> when absent.</td></tr><tr data-v=""><th scope="row"><span class="nm">Slicing</span></th><td class="cd"><pre><code>xs[1:4]
+xs[::-1]
+xs[-2:]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Slicing">Copy</button></td><td class="nt">Slices never raise; <code>xs[10:]</code> just returns <code>[]</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Comprehension with filter</span></th><td class="cd"><pre><code>[x * x for x in range(10) if x % 2 == 0]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Comprehension with filter">Copy</button></td><td class="nt">Squares of the even numbers, built in one expression.</td></tr><tr data-v=""><th scope="row"><span class="nm">Flatten nested lists</span></th><td class="cd"><pre><code>[v for row in grid for v in row]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Flatten nested lists">Copy</button></td><td class="nt">Loops read left to right, exactly like nested for statements.</td></tr><tr data-v=""><th scope="row"><span class="nm">Sort in place by custom key</span></th><td class="cd"><pre><code>words = ["pear", "fig", "apple"]
+words.sort(key=lambda w: (len(w), w))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Sort in place by custom key">Copy</button></td><td class="nt">Returns <code>None</code>; tuple keys sort by length, then alphabetically.</td></tr><tr data-v=""><th scope="row"><span class="nm">Sorted copy, descending</span></th><td class="cd"><pre><code>sorted(words, key=str.lower, reverse=True)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Sorted copy, descending">Copy</button></td><td class="nt"><code>sorted</code> leaves the original untouched.</td></tr><tr data-v=""><th scope="row"><span class="nm">Merge lists</span></th><td class="cd"><pre><code>merged = [*a, *b]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Merge lists">Copy</button></td><td class="nt">Same result as <code>a + b</code>; unpacking also works for mixed iterables.</td></tr><tr data-v=""><th scope="row"><span class="nm">Unpack head and tail</span></th><td class="cd"><pre><code>first, *rest = xs</code></pre><button class="copy" type="button" aria-label="Copy snippet for Unpack head and tail">Copy</button></td><td class="nt"><code>rest</code> is always a list, even when empty.</td></tr><tr data-v=""><th scope="row"><span class="nm">Copy</span></th><td class="cd"><pre><code>ys = xs.copy()</code></pre><button class="copy" type="button" aria-label="Copy snippet for Copy">Copy</button></td><td class="nt">Shallow copy; nested objects are still shared.</td></tr><tr data-v=""><th scope="row"><span class="nm">Pair up iterables</span></th><td class="cd"><pre><code>for i, (a, b) in enumerate(zip(xs, ys)):
+    print(i, a, b)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Pair up iterables">Copy</button></td><td class="nt"><code>zip</code> stops at the shortest; add <code>strict=True</code> to raise on mismatch.</td></tr></tbody></table></div></div><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">dicts.py</span><h3>Dictionaries</h3><span class="cnt">11 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Safe lookup</span></th><td class="cd"><pre><code>d = {"a": 1}
+d.get("b", 0)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Safe lookup">Copy</button></td><td class="nt">Returns the default instead of raising <code>KeyError</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Group with setdefault</span></th><td class="cd"><pre><code>groups = {}
+groups.setdefault("a", []).append(1)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Group with setdefault">Copy</button></td><td class="nt">Creates the list on first use, then appends.</td></tr><tr data-v=""><th scope="row"><span class="nm">Group with defaultdict</span></th><td class="cd"><pre><code>from collections import defaultdict
+groups = defaultdict(list)
+groups["a"].append(1)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Group with defaultdict">Copy</button></td><td class="nt">Missing keys are created on access using the factory.</td></tr><tr data-v=""><th scope="row"><span class="nm">Merge</span></th><td class="cd"><pre><code>merged = a | b
+a |= b</code></pre><button class="copy" type="button" aria-label="Copy snippet for Merge">Copy</button></td><td class="nt">Right side wins on key conflicts (3.9+).</td></tr><tr data-v=""><th scope="row"><span class="nm">Merge with unpacking</span></th><td class="cd"><pre><code>{**a, **b, 'extra': 1}</code></pre><button class="copy" type="button" aria-label="Copy snippet for Merge with unpacking">Copy</button></td><td class="nt">Useful when adding literal keys while merging.</td></tr><tr data-v=""><th scope="row"><span class="nm">Comprehension</span></th><td class="cd"><pre><code>{k: v for k, v in pairs if v}</code></pre><button class="copy" type="button" aria-label="Copy snippet for Comprehension">Copy</button></td><td class="nt">Builds a dict from pairs, dropping falsy values.</td></tr><tr data-v=""><th scope="row"><span class="nm">Invert</span></th><td class="cd"><pre><code>{v: k for k, v in d.items()}</code></pre><button class="copy" type="button" aria-label="Copy snippet for Invert">Copy</button></td><td class="nt">Values must be unique and hashable.</td></tr><tr data-v=""><th scope="row"><span class="nm">Sort by value</span></th><td class="cd"><pre><code>dict(sorted(d.items(), key=lambda kv: kv[1], reverse=True))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Sort by value">Copy</button></td><td class="nt">Dicts keep insertion order, so sort the items and rebuild.</td></tr><tr data-v=""><th scope="row"><span class="nm">Delete safely</span></th><td class="cd"><pre><code>d.pop("k", None)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Delete safely">Copy</button></td><td class="nt">No error if the key is missing.</td></tr><tr data-v=""><th scope="row"><span class="nm">Iterate</span></th><td class="cd"><pre><code>for k, v in d.items():
+    print(k, v)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Iterate">Copy</button></td><td class="nt">Never add or remove keys while iterating.</td></tr><tr data-v=""><th scope="row"><span class="nm">Keys must be hashable</span></th><td class="cd"><pre><code>ok = {(1, 2): "tuple key"}</code></pre><button class="copy" type="button" aria-label="Copy snippet for Keys must be hashable">Copy</button></td><td class="nt">A list key raises <code>TypeError: unhashable type</code>.</td></tr></tbody></table></div></div><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">sets_tuples.py</span><h3>Sets and tuples</h3><span class="cnt">9 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Create sets</span></th><td class="cd"><pre><code>s = {1, 2, 3}
+empty = set()</code></pre><button class="copy" type="button" aria-label="Copy snippet for Create sets">Copy</button></td><td class="nt"><code>{}</code> creates an empty dict, not a set.</td></tr><tr data-v=""><th scope="row"><span class="nm">Set algebra</span></th><td class="cd"><pre><code>a | b
+a &amp; b
+a - b
+a ^ b</code></pre><button class="copy" type="button" aria-label="Copy snippet for Set algebra">Copy</button></td><td class="nt">Union, intersection, difference, symmetric difference.</td></tr><tr data-v=""><th scope="row"><span class="nm">Remove without errors</span></th><td class="cd"><pre><code>s.discard(99)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Remove without errors">Copy</button></td><td class="nt"><code>remove(99)</code> would raise <code>KeyError</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Subset and disjoint checks</span></th><td class="cd"><pre><code>a &lt;= b
+a.isdisjoint(b)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Subset and disjoint checks">Copy</button></td><td class="nt">Subset test and no-overlap test.</td></tr><tr data-v=""><th scope="row"><span class="nm">Dedupe, keep order</span></th><td class="cd"><pre><code>list(dict.fromkeys(xs))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Dedupe, keep order">Copy</button></td><td class="nt">Dict keys preserve first-seen order; <code>set</code> does not.</td></tr><tr data-v=""><th scope="row"><span class="nm">Immutable set</span></th><td class="cd"><pre><code>frozenset({1, 2})</code></pre><button class="copy" type="button" aria-label="Copy snippet for Immutable set">Copy</button></td><td class="nt">Hashable, so it can be a dict key or set member.</td></tr><tr data-v=""><th scope="row"><span class="nm">Single-item tuple</span></th><td class="cd"><pre><code>t = (1,)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Single-item tuple">Copy</button></td><td class="nt">The trailing comma makes the tuple, not the parentheses.</td></tr><tr data-v=""><th scope="row"><span class="nm">Swap without temp</span></th><td class="cd"><pre><code>a, b = b, a</code></pre><button class="copy" type="button" aria-label="Copy snippet for Swap without temp">Copy</button></td><td class="nt">Right side is packed into a tuple, then unpacked.</td></tr><tr data-v=""><th scope="row"><span class="nm">Tuple holding mutables</span></th><td class="cd"><pre><code>t = ([1], 2)
+t[0].append(9)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Tuple holding mutables">Copy</button></td><td class="nt">The tuple is immutable; the list inside it is not.</td></tr></tbody></table></div></div><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">collections_heapq.py</span><h3>Standard library structures</h3><span class="cnt">11 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">deque as a queue</span></th><td class="cd"><pre><code>from collections import deque
+q = deque([1, 2, 3])
+q.append(4)
+q.popleft()</code></pre><button class="copy" type="button" aria-label="Copy snippet for deque as a queue">Copy</button></td><td class="nt">O(1) at both ends, unlike <code>list.pop(0)</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Bounded deque</span></th><td class="cd"><pre><code>recent = deque(maxlen=3)
+for n in range(5):
+    recent.append(n)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Bounded deque">Copy</button></td><td class="nt">Oldest items drop automatically; ends as <code>deque([2, 3, 4])</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Rotate</span></th><td class="cd"><pre><code>q.rotate(1)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Rotate">Copy</button></td><td class="nt">Shifts items right; negative values shift left.</td></tr><tr data-v=""><th scope="row"><span class="nm">namedtuple</span></th><td class="cd"><pre><code>from collections import namedtuple
+Point = namedtuple("Point", ["x", "y"])
+p = Point(1, 2)
+print(p.x, p._replace(x=5), p._asdict())</code></pre><button class="copy" type="button" aria-label="Copy snippet for namedtuple">Copy</button></td><td class="nt">Tuple with named fields; <code>_replace</code> returns a modified copy.</td></tr><tr data-v=""><th scope="row"><span class="nm">Typed NamedTuple</span></th><td class="cd"><pre><code>from typing import NamedTuple
+
+class Point(NamedTuple):
+    x: int
+    y: int = 0</code></pre><button class="copy" type="button" aria-label="Copy snippet for Typed NamedTuple">Copy</button></td><td class="nt">Class syntax with type hints and defaults.</td></tr><tr data-v=""><th scope="row"><span class="nm">Min-heap push and pop</span></th><td class="cd"><pre><code>import heapq
+h = []
+heapq.heappush(h, 5)
+heapq.heappush(h, 1)
+heapq.heappop(h)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Min-heap push and pop">Copy</button></td><td class="nt">Pops the smallest item (<code>1</code>) in O(log n).</td></tr><tr data-v=""><th scope="row"><span class="nm">Heapify in place</span></th><td class="cd"><pre><code>nums = [5, 3, 8, 1]
+heapq.heapify(nums)
+nums[0]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Heapify in place">Copy</button></td><td class="nt">O(n) conversion; index 0 is always the minimum.</td></tr><tr data-v=""><th scope="row"><span class="nm">Priority queue with tuples</span></th><td class="cd"><pre><code>heapq.heappush(h, (2, "write"))
+heapq.heappush(h, (1, "plan"))
+heapq.heappop(h)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Priority queue with tuples">Copy</button></td><td class="nt">Tuples compare left to right, so the first field is the priority.</td></tr><tr data-v=""><th scope="row"><span class="nm">Max-heap trick</span></th><td class="cd"><pre><code>heapq.heappush(h, -score)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Max-heap trick">Copy</button></td><td class="nt">Negate values on the way in and out; heapq is min-only.</td></tr><tr data-v=""><th scope="row"><span class="nm">Top-k shortcuts</span></th><td class="cd"><pre><code>heapq.nlargest(3, nums)
+heapq.nsmallest(3, nums)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Top-k shortcuts">Copy</button></td><td class="nt">Cheaper than sorting everything when k is small.</td></tr><tr data-v=""><th scope="row"><span class="nm">Frequency counting</span></th><td class="cd"><pre><code>from collections import Counter
+Counter("banana").most_common(2)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Frequency counting">Copy</button></td><td class="nt">Returns <code>[('a', 3), ('n', 2)]</code>.</td></tr></tbody></table></div></div><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">patterns.py</span><h3>Classic algorithm patterns</h3><span class="cnt">7 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Binary search</span></th><td class="cd"><pre><code>def bsearch(a, target):
+    lo, hi = 0, len(a) - 1
+    while lo &lt;= hi:
+        mid = (lo + hi) // 2
+        if a[mid] == target:
+            return mid
+        if a[mid] &lt; target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1</code></pre><button class="copy" type="button" aria-label="Copy snippet for Binary search">Copy</button></td><td class="nt">Sorted input only; O(log n) time, O(1) space.</td></tr><tr data-v=""><th scope="row"><span class="nm">Binary search, stdlib</span></th><td class="cd"><pre><code>import bisect
+i = bisect.bisect_left(a, target)
+found = i &lt; len(a) and a[i] == target</code></pre><button class="copy" type="button" aria-label="Copy snippet for Binary search, stdlib">Copy</button></td><td class="nt"><code>bisect_left</code> gives the insertion point; check it matches.</td></tr><tr data-v=""><th scope="row"><span class="nm">Sliding window (fixed size)</span></th><td class="cd"><pre><code>def max_window_sum(a, k):
+    cur = best = sum(a[:k])
+    for i in range(k, len(a)):
+        cur += a[i] - a[i - k]
+        best = max(best, cur)
+    return best</code></pre><button class="copy" type="button" aria-label="Copy snippet for Sliding window (fixed size)">Copy</button></td><td class="nt">Add the entering item, drop the leaving one; O(n) instead of O(n*k).</td></tr><tr data-v=""><th scope="row"><span class="nm">Sliding window (variable size)</span></th><td class="cd"><pre><code>def longest_unique(s):
+    seen, left, best = {}, 0, 0
+    for right, ch in enumerate(s):
+        if ch in seen and seen[ch] &gt;= left:
+            left = seen[ch] + 1
+        seen[ch] = right
+        best = max(best, right - left + 1)
+    return best</code></pre><button class="copy" type="button" aria-label="Copy snippet for Sliding window (variable size)">Copy</button></td><td class="nt">Grow right, jump left past the repeat; O(n).</td></tr><tr data-v=""><th scope="row"><span class="nm">Frequency counter</span></th><td class="cd"><pre><code>def is_anagram(a, b):
+    freq = {}
+    for ch in a:
+        freq[ch] = freq.get(ch, 0) + 1
+    for ch in b:
+        freq[ch] = freq.get(ch, 0) - 1
+    return all(v == 0 for v in freq.values())</code></pre><button class="copy" type="button" aria-label="Copy snippet for Frequency counter">Copy</button></td><td class="nt">Counts up for one input, down for the other; zeros mean a match.</td></tr><tr data-v=""><th scope="row"><span class="nm">Two-sum with a dict</span></th><td class="cd"><pre><code>def two_sum(nums, target):
+    seen = {}
+    for i, n in enumerate(nums):
+        if target - n in seen:
+            return seen[target - n], i
+        seen[n] = i</code></pre><button class="copy" type="button" aria-label="Copy snippet for Two-sum with a dict">Copy</button></td><td class="nt">Store what you have seen; look up the complement in O(1).</td></tr><tr data-v=""><th scope="row"><span class="nm">BFS with deque</span></th><td class="cd"><pre><code>def bfs(graph, start):
+    seen, q = {start}, deque([start])
+    while q:
+        node = q.popleft()
+        for nxt in graph[node]:
+            if nxt not in seen:
+                seen.add(nxt)
+                q.append(nxt)
+    return seen</code></pre><button class="copy" type="button" aria-label="Copy snippet for BFS with deque">Copy</button></td><td class="nt">Level-order traversal; mark nodes seen when enqueued.</td></tr></tbody></table></div></div></section><section class="sec" id="io" style="--c:var(--green)">
+<header class="sec-head"><span class="sec-n">03</span><div><h2>Modern pathlib &amp; file I/O</h2><p>Object-oriented paths, safe context managers, and clean structured-data parsing.</p></div></header>
+<div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">paths.py</span><h3>pathlib.Path</h3><span class="cnt">15 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Join paths</span></th><td class="cd"><pre><code>from pathlib import Path
+p = Path("data") / "in" / "file.txt"</code></pre><button class="copy" type="button" aria-label="Copy snippet for Join paths">Copy</button></td><td class="nt">The / operator joins segments portably.</td></tr><tr data-v=""><th scope="row"><span class="nm">Useful anchors</span></th><td class="cd"><pre><code>Path.home()
+Path.cwd()
+Path(__file__).resolve().parent</code></pre><button class="copy" type="button" aria-label="Copy snippet for Useful anchors">Copy</button></td><td class="nt">Home, working dir, and the folder of the running script.</td></tr><tr data-v=""><th scope="row"><span class="nm">Path parts</span></th><td class="cd"><pre><code>p.name
+p.stem
+p.suffix
+p.parent</code></pre><button class="copy" type="button" aria-label="Copy snippet for Path parts">Copy</button></td><td class="nt"><code>file.txt</code>, <code>file</code>, <code>.txt</code>, and the parent folder.</td></tr><tr data-v=""><th scope="row"><span class="nm">Change name or suffix</span></th><td class="cd"><pre><code>p.with_suffix(".csv")
+p.with_name("other.txt")</code></pre><button class="copy" type="button" aria-label="Copy snippet for Change name or suffix">Copy</button></td><td class="nt">Returns a new path; nothing on disk changes.</td></tr><tr data-v=""><th scope="row"><span class="nm">Existence checks</span></th><td class="cd"><pre><code>p.exists()
+p.is_file()
+p.is_dir()</code></pre><button class="copy" type="button" aria-label="Copy snippet for Existence checks">Copy</button></td><td class="nt">Check type, not just existence.</td></tr><tr data-v=""><th scope="row"><span class="nm">Make directories</span></th><td class="cd"><pre><code>Path("out/logs").mkdir(parents=True, exist_ok=True)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Make directories">Copy</button></td><td class="nt">Idempotent; creates missing parents.</td></tr><tr data-v=""><th scope="row"><span class="nm">List a directory</span></th><td class="cd"><pre><code>for child in p.parent.iterdir():
+    print(child.name)</code></pre><button class="copy" type="button" aria-label="Copy snippet for List a directory">Copy</button></td><td class="nt">Order is arbitrary; wrap in <code>sorted()</code> when it matters.</td></tr><tr data-v=""><th scope="row"><span class="nm">Glob patterns</span></th><td class="cd"><pre><code>list(Path(".").glob("*.py"))
+list(Path(".").rglob("*.md"))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Glob patterns">Copy</button></td><td class="nt"><code>rglob</code> recurses into subfolders.</td></tr><tr data-v=""><th scope="row"><span class="nm">Walk a tree (3.12)</span></th><td class="cd"><pre><code>for root, dirs, files in Path(".").walk():
+    print(root, len(files))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Walk a tree (3.12)">Copy</button></td><td class="nt"><code>Path.walk()</code> is the pathlib version of <code>os.walk</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Write and read text</span></th><td class="cd"><pre><code>p.parent.mkdir(parents=True, exist_ok=True)
+p.write_text("hi", encoding="utf-8")
+text = p.read_text(encoding="utf-8")</code></pre><button class="copy" type="button" aria-label="Copy snippet for Write and read text">Copy</button></td><td class="nt">No open loop; always pass the encoding.</td></tr><tr data-v=""><th scope="row"><span class="nm">Write and read bytes</span></th><td class="cd"><pre><code>p.write_bytes(b"\x00\x01")
+data = p.read_bytes()</code></pre><button class="copy" type="button" aria-label="Copy snippet for Write and read bytes">Copy</button></td><td class="nt">For binary files such as images and archives.</td></tr><tr data-v=""><th scope="row"><span class="nm">Append lines</span></th><td class="cd"><pre><code>with p.open("a", encoding="utf-8") as f:
+    f.write("line\n")</code></pre><button class="copy" type="button" aria-label="Copy snippet for Append lines">Copy</button></td><td class="nt">Append mode needs <code>open</code>; there is no <code>append_text</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">File size</span></th><td class="cd"><pre><code>p.stat().st_size</code></pre><button class="copy" type="button" aria-label="Copy snippet for File size">Copy</button></td><td class="nt">Bytes on disk.</td></tr><tr data-v=""><th scope="row"><span class="nm">Delete a file</span></th><td class="cd"><pre><code>p.unlink(missing_ok=True)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Delete a file">Copy</button></td><td class="nt">No error if it is already gone.</td></tr><tr data-v=""><th scope="row"><span class="nm">Prevent path escape</span></th><td class="cd"><pre><code>base = Path("/srv/app").resolve()
+ok = (base / name).resolve().is_relative_to(base)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Prevent path escape">Copy</button></td><td class="nt">Blocks <code>../</code> traversal from user-supplied names.</td></tr></tbody></table></div></div><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">context.py</span><h3>Context managers</h3><span class="cnt">7 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Two files at once</span></th><td class="cd"><pre><code>with open("in.txt", encoding="utf-8") as src, open("out.txt", "w", encoding="utf-8") as dst:
+    for line in src:
+        dst.write(line.upper())</code></pre><button class="copy" type="button" aria-label="Copy snippet for Two files at once">Copy</button></td><td class="nt">Both close even if an exception fires inside.</td></tr><tr data-v=""><th scope="row"><span class="nm">Parenthesized with</span></th><td class="cd"><pre><code>with (
+    Path("a.txt").open() as a,
+    Path("b.txt").open("w") as b,
+):
+    b.write(a.read())</code></pre><button class="copy" type="button" aria-label="Copy snippet for Parenthesized with">Copy</button></td><td class="nt">Official syntax since 3.10; avoids backslash line breaks.</td></tr><tr data-v=""><th scope="row"><span class="nm">Truly nested with</span></th><td class="cd"><pre><code>with open("a.txt") as a:
+    with open("b.txt", "w") as b:
+        b.write(a.read())</code></pre><button class="copy" type="button" aria-label="Copy snippet for Truly nested with">Copy</button></td><td class="nt">Use when the inner resource depends on the outer one.</td></tr><tr data-v=""><th scope="row"><span class="nm">Unknown number of files</span></th><td class="cd"><pre><code>from contextlib import ExitStack
+with ExitStack() as stack:
+    files = [stack.enter_context(open(n)) for n in names]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Unknown number of files">Copy</button></td><td class="nt">Closes every file on exit, however many there are.</td></tr><tr data-v=""><th scope="row"><span class="nm">Ignore one error type</span></th><td class="cd"><pre><code>from contextlib import suppress
+with suppress(FileNotFoundError):
+    Path("old.log").unlink()</code></pre><button class="copy" type="button" aria-label="Copy snippet for Ignore one error type">Copy</button></td><td class="nt">Cleaner than an empty <code>try/except</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Write your own</span></th><td class="cd"><pre><code>import os
+from contextlib import contextmanager
+
+@contextmanager
+def cd(path):
+    old = os.getcwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(old)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Write your own">Copy</button></td><td class="nt">Code before <code>yield</code> is setup; <code>finally</code> guarantees teardown.</td></tr><tr data-v=""><th scope="row"><span class="nm">Atomic write</span></th><td class="cd"><pre><code>tmp = p.with_suffix(".tmp")
+tmp.write_text(data, encoding="utf-8")
+tmp.replace(p)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Atomic write">Copy</button></td><td class="nt">Readers never see a half-written file.</td></tr></tbody></table></div></div><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">parsing.py</span><h3>JSON, CSV and TOML</h3><span class="cnt">8 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Object to JSON string</span></th><td class="cd"><pre><code>import json
+s = json.dumps({"a": 1}, indent=2, ensure_ascii=False)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Object to JSON string">Copy</button></td><td class="nt">Pretty-printed; keeps non-ASCII characters readable.</td></tr><tr data-v=""><th scope="row"><span class="nm">JSON string to object</span></th><td class="cd"><pre><code>obj = json.loads('{"a": 1}')</code></pre><button class="copy" type="button" aria-label="Copy snippet for JSON string to object">Copy</button></td><td class="nt">Always returns dict, list, str, number, bool, or None.</td></tr><tr data-v=""><th scope="row"><span class="nm">Read JSON file</span></th><td class="cd"><pre><code>cfg = json.loads(Path("cfg.json").read_text(encoding="utf-8"))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Read JSON file">Copy</button></td><td class="nt">Pairs naturally with pathlib.</td></tr><tr data-v=""><th scope="row"><span class="nm">Write JSON file</span></th><td class="cd"><pre><code>with open("out.json", "w", encoding="utf-8") as f:
+    json.dump(cfg, f, indent=2)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Write JSON file">Copy</button></td><td class="nt"><code>dump</code> writes to a file object; <code>dumps</code> returns a string.</td></tr><tr data-v=""><th scope="row"><span class="nm">Non-serializable types</span></th><td class="cd"><pre><code>json.dumps({"when": datetime.now()}, default=str)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Non-serializable types">Copy</button></td><td class="nt"><code>default=</code> converts anything JSON cannot encode.</td></tr><tr data-v=""><th scope="row"><span class="nm">Read CSV as dicts</span></th><td class="cd"><pre><code>import csv
+with open("in.csv", newline="", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Read CSV as dicts">Copy</button></td><td class="nt">Each row is a dict keyed by the header; keep <code>newline=""</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Write CSV from dicts</span></th><td class="cd"><pre><code>with open("out.csv", "w", newline="", encoding="utf-8") as f:
+    w = csv.DictWriter(f, fieldnames=["id", "name"])
+    w.writeheader()
+    w.writerows([{"id": 1, "name": "Ada"}])</code></pre><button class="copy" type="button" aria-label="Copy snippet for Write CSV from dicts">Copy</button></td><td class="nt">Header first, then rows.</td></tr><tr data-v=""><th scope="row"><span class="nm">Read TOML (3.11+)</span></th><td class="cd"><pre><code>import tomllib
+with open("pyproject.toml", "rb") as f:
+    conf = tomllib.load(f)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Read TOML (3.11+)">Copy</button></td><td class="nt">Standard library, read-only, requires binary mode.</td></tr></tbody></table></div></div></section><section class="sec" id="oop" style="--c:var(--purple)">
+<header class="sec-head"><span class="sec-n">04</span><div><h2>Production object-oriented programming</h2><p>Dataclasses, properties, abstract interfaces, and what the underscores actually mean.</p></div></header>
+<div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">dataclasses.py</span><h3>Dataclasses</h3><span class="cnt">9 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Basic dataclass</span></th><td class="cd"><pre><code>from dataclasses import dataclass
+
+@dataclass
+class User:
+    name: str
+    age: int = 0</code></pre><button class="copy" type="button" aria-label="Copy snippet for Basic dataclass">Copy</button></td><td class="nt">Generates <code>__init__</code>, <code>__repr__</code>, and <code>__eq__</code> from the annotations.</td></tr><tr data-v=""><th scope="row"><span class="nm">Frozen and slots</span></th><td class="cd"><pre><code>@dataclass(frozen=True, slots=True)
+class Point:
+    x: float
+    y: float</code></pre><button class="copy" type="button" aria-label="Copy snippet for Frozen and slots">Copy</button></td><td class="nt">Immutable and hashable, with lower memory use.</td></tr><tr data-v=""><th scope="row"><span class="nm">Mutable default fields</span></th><td class="cd"><pre><code>from dataclasses import field
+
+@dataclass
+class Team:
+    tags: list[str] = field(default_factory=list)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Mutable default fields">Copy</button></td><td class="nt">A bare <code>[]</code> default raises <code>ValueError</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Validate after init</span></th><td class="cd"><pre><code>@dataclass
+class Account:
+    balance: int
+
+    def __post_init__(self):
+        if self.balance &lt; 0:
+            raise ValueError("balance")</code></pre><button class="copy" type="button" aria-label="Copy snippet for Validate after init">Copy</button></td><td class="nt">Runs right after the generated <code>__init__</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Keyword-only and ordering</span></th><td class="cd"><pre><code>@dataclass(kw_only=True, order=True)
+class Job:
+    priority: int
+    name: str</code></pre><button class="copy" type="button" aria-label="Copy snippet for Keyword-only and ordering">Copy</button></td><td class="nt"><code>order=True</code> adds <code>&amp;lt;</code> and <code>&amp;gt;</code> comparing fields in order.</td></tr><tr data-v=""><th scope="row"><span class="nm">Copy with changes</span></th><td class="cd"><pre><code>from dataclasses import replace, asdict
+older = replace(user, age=31)
+print(asdict(older))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Copy with changes">Copy</button></td><td class="nt"><code>replace</code> is the idiom for frozen instances.</td></tr><tr data-v=""><th scope="row"><span class="nm">Hide a field</span></th><td class="cd"><pre><code>secret: str = field(repr=False, compare=False)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Hide a field">Copy</button></td><td class="nt">Keeps tokens out of logs and equality checks.</td></tr><tr data-v=""><th scope="row"><span class="nm">Generic class (3.12)</span></th><td class="cd"><pre><code>class Box[T]:
+    def __init__(self, item: T):
+        self.item = item</code></pre><button class="copy" type="button" aria-label="Copy snippet for Generic class (3.12)">Copy</button></td><td class="nt">PEP 695 syntax; no <code>TypeVar</code> import needed.</td></tr><tr data-v=""><th scope="row"><span class="nm">Type alias (3.12)</span></th><td class="cd"><pre><code>type Pair = tuple[int, int]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Type alias (3.12)">Copy</button></td><td class="nt">The <code>type</code> statement defines aliases lazily.</td></tr></tbody></table></div></div><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">properties.py</span><h3>Properties</h3><span class="cnt">3 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Getter, setter, deleter</span></th><td class="cd"><pre><code>class Temp:
+    def __init__(self, c):
+        self.c = c
+
+    @property
+    def c(self):
+        return self._c
+
+    @c.setter
+    def c(self, v):
+        if v &lt; -273.15:
+            raise ValueError("below absolute zero")
+        self._c = v
+
+    @c.deleter
+    def c(self):
+        del self._c</code></pre><button class="copy" type="button" aria-label="Copy snippet for Getter, setter, deleter">Copy</button></td><td class="nt">Assigning in <code>__init__</code> routes through the validating setter.</td></tr><tr data-v=""><th scope="row"><span class="nm">Computed read-only</span></th><td class="cd"><pre><code>class Circle:
+    def __init__(self, r):
+        self.r = r
+
+    @property
+    def area(self):
+        return 3.14159 * self.r ** 2</code></pre><button class="copy" type="button" aria-label="Copy snippet for Computed read-only">Copy</button></td><td class="nt">No setter means assignment raises <code>AttributeError</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Cache an expensive value</span></th><td class="cd"><pre><code>from functools import cached_property
+
+class Report:
+    @cached_property
+    def rows(self):
+        return load_rows()</code></pre><button class="copy" type="button" aria-label="Copy snippet for Cache an expensive value">Copy</button></td><td class="nt">Computed once per instance, then stored.</td></tr></tbody></table></div></div><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">abc_demo.py</span><h3>Abstract base classes and protocols</h3><span class="cnt">6 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Define an interface</span></th><td class="cd"><pre><code>from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self) -&gt; float: ...</code></pre><button class="copy" type="button" aria-label="Copy snippet for Define an interface">Copy</button></td><td class="nt">Subclasses must implement every abstract method.</td></tr><tr data-v=""><th scope="row"><span class="nm">Implement it</span></th><td class="cd"><pre><code>import math
+
+class Circle(Shape):
+    def __init__(self, r):
+        self.r = r
+
+    def area(self):
+        return math.pi * self.r ** 2</code></pre><button class="copy" type="button" aria-label="Copy snippet for Implement it">Copy</button></td><td class="nt">Instantiating <code>Shape()</code> directly raises <code>TypeError</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Mark overrides (3.12)</span></th><td class="cd"><pre><code>from typing import override
+
+class Square(Shape):
+    @override
+    def area(self) -&gt; float:
+        return 4.0</code></pre><button class="copy" type="button" aria-label="Copy snippet for Mark overrides (3.12)">Copy</button></td><td class="nt">Type checkers flag the method if the parent drops it.</td></tr><tr data-v=""><th scope="row"><span class="nm">Structural typing</span></th><td class="cd"><pre><code>from typing import Protocol
+
+class Closeable(Protocol):
+    def close(self) -&gt; None: ...</code></pre><button class="copy" type="button" aria-label="Copy snippet for Structural typing">Copy</button></td><td class="nt">Any object with <code>close()</code> qualifies; no inheritance required.</td></tr><tr data-v=""><th scope="row"><span class="nm">Constructors and statics</span></th><td class="cd"><pre><code>class Date:
+    @classmethod
+    def today(cls):
+        return cls()
+
+    @staticmethod
+    def is_leap(y):
+        return y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Constructors and statics">Copy</button></td><td class="nt"><code>cls</code> gets the class; static methods get nothing implicit.</td></tr><tr data-v=""><th scope="row"><span class="nm">Cooperative super()</span></th><td class="cd"><pre><code>class B(A):
+    def __init__(self):
+        super().__init__()</code></pre><button class="copy" type="button" aria-label="Copy snippet for Cooperative super()">Copy</button></td><td class="nt">Follows the MRO; inspect it with <code>B.__mro__</code>.</td></tr></tbody></table></div></div><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">access.py</span><h3>Access conventions</h3><span class="cnt">5 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Public</span></th><td class="cd"><pre><code>self.name = name</code></pre><button class="copy" type="button" aria-label="Copy snippet for Public">Copy</button></td><td class="nt">Part of the API; safe for anyone to use.</td></tr><tr data-v=""><th scope="row"><span class="nm">Protected (convention)</span></th><td class="cd"><pre><code>self._cache = {}</code></pre><button class="copy" type="button" aria-label="Copy snippet for Protected (convention)">Copy</button></td><td class="nt">Single underscore means internal; Python does not enforce it.</td></tr><tr data-v=""><th scope="row"><span class="nm">Private (name mangling)</span></th><td class="cd"><pre><code>class A:
+    def __init__(self):
+        self.__x = 1
+
+a = A()
+print(a._A__x)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Private (name mangling)">Copy</button></td><td class="nt"><code>__x</code> is renamed <code>_A__x</code> to avoid subclass collisions, not for secrecy.</td></tr><tr data-v=""><th scope="row"><span class="nm">Restrict attributes</span></th><td class="cd"><pre><code>class P:
+    __slots__ = ("x", "y")</code></pre><button class="copy" type="button" aria-label="Copy snippet for Restrict attributes">Copy</button></td><td class="nt">Blocks new attributes and shrinks per-instance memory.</td></tr><tr data-v=""><th scope="row"><span class="nm">Readable repr</span></th><td class="cd"><pre><code>def __repr__(self):
+    return f"User(name={self.name!r})"</code></pre><button class="copy" type="button" aria-label="Copy snippet for Readable repr">Copy</button></td><td class="nt"><code>!r</code> quotes strings so the output is unambiguous.</td></tr></tbody></table></div></div></section><section class="sec" id="async" style="--c:var(--orange)">
+<header class="sec-head"><span class="sec-n">05</span><div><h2>Asynchronous programming with asyncio</h2><p>One thread, many waiting tasks. Use it for I/O; hand CPU work to processes.</p></div></header>
+<figure class="dia"><svg viewBox="0 0 900 270" role="img" aria-label="Timeline comparing sequential awaits to asyncio.gather">
+<text class="t" x="10" y="22" style="fill:var(--cyan)">asyncio.gather(fetch(1), fetch(2), fetch(1))</text>
+<g class="m">
+<text x="10" y="58">task A</text><rect x="150" y="44" width="160" height="22" rx="5" style="fill:var(--cyan);opacity:.85"/><text x="158" y="59" style="fill:var(--bg-deep)">await sleep(1)</text>
+<text x="10" y="98">task B</text><rect x="150" y="84" width="320" height="22" rx="5" style="fill:var(--yellow);opacity:.85"/><text x="158" y="99" style="fill:var(--bg-deep)">await sleep(2)</text>
+<text x="10" y="138">task C</text><rect x="150" y="124" width="160" height="22" rx="5" style="fill:var(--pink);opacity:.85"/><text x="158" y="139" style="fill:var(--bg-deep)">await sleep(1)</text>
+</g>
+<line x1="470" y1="38" x2="470" y2="156" stroke="var(--green)" stroke-dasharray="4 4"/>
+<text class="m" x="478" y="172" style="fill:var(--green)">total = max(1, 2, 1) = 2s</text>
+<text class="t" x="10" y="206" style="fill:var(--orange)">sequential: await fetch(1); await fetch(2); await fetch(1)</text>
+<g class="m">
+<rect x="150" y="218" width="160" height="22" rx="5" style="fill:var(--cyan);opacity:.85"/><rect x="310" y="218" width="320" height="22" rx="5" style="fill:var(--yellow);opacity:.85"/><rect x="630" y="218" width="160" height="22" rx="5" style="fill:var(--pink);opacity:.85"/>
+<text x="10" y="233">one after another</text>
+</g>
+<line x1="790" y1="212" x2="790" y2="246" stroke="var(--orange)" stroke-dasharray="4 4"/>
+<text class="m" x="798" y="233" style="fill:var(--orange)">sum = 4s</text>
+<text class="s" x="10" y="262">Each await hands control back to the single-threaded event loop, which resumes whichever task is ready.</text>
+</svg><figcaption>Concurrent awaits overlap their waiting time. The total is the slowest task, not the sum.</figcaption></figure><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">async_basics.py</span><h3>Coroutines and concurrency</h3><span class="cnt">11 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Define and run</span></th><td class="cd"><pre><code>import asyncio
+
+async def main():
+    await asyncio.sleep(1)
+    return "done"
+
+print(asyncio.run(main()))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Define and run">Copy</button></td><td class="nt"><code>asyncio.run</code> creates the event loop, runs it, and closes it.</td></tr><tr data-v=""><th scope="row"><span class="nm">Run tasks concurrently</span></th><td class="cd"><pre><code>async def fetch(n):
+    await asyncio.sleep(n)
+    return n
+
+async def main():
+    return await asyncio.gather(fetch(1), fetch(2))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Run tasks concurrently">Copy</button></td><td class="nt">Results come back in argument order.</td></tr><tr data-v=""><th scope="row"><span class="nm">Collect errors, not crash</span></th><td class="cd"><pre><code>results = await asyncio.gather(*coros, return_exceptions=True)
+failed = [r for r in results if isinstance(r, Exception)]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Collect errors, not crash">Copy</button></td><td class="nt">Exceptions are returned as values instead of cancelling the batch.</td></tr><tr data-v=""><th scope="row"><span class="nm">Timeout block (3.11+)</span></th><td class="cd"><pre><code>try:
+    async with asyncio.timeout(2):
+        await slow()
+except TimeoutError:
+    print("too slow")</code></pre><button class="copy" type="button" aria-label="Copy snippet for Timeout block (3.11+)">Copy</button></td><td class="nt">Cancels the body and raises <code>TimeoutError</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Timeout one awaitable</span></th><td class="cd"><pre><code>await asyncio.wait_for(slow(), timeout=2)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Timeout one awaitable">Copy</button></td><td class="nt">Shorthand for a single call.</td></tr><tr data-v=""><th scope="row"><span class="nm">TaskGroup (3.11+)</span></th><td class="cd"><pre><code>async with asyncio.TaskGroup() as tg:
+    t1 = tg.create_task(fetch(1))
+    t2 = tg.create_task(fetch(2))
+print(t1.result(), t2.result())</code></pre><button class="copy" type="button" aria-label="Copy snippet for TaskGroup (3.11+)">Copy</button></td><td class="nt">If one task fails, siblings are cancelled and errors are grouped.</td></tr><tr data-v=""><th scope="row"><span class="nm">Handle grouped errors</span></th><td class="cd"><pre><code>try:
+    async with asyncio.TaskGroup() as tg:
+        tg.create_task(job())
+except* ValueError as eg:
+    print(eg.exceptions)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Handle grouped errors">Copy</button></td><td class="nt"><code>except*</code> matches inside an <code>ExceptionGroup</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Limit concurrency</span></th><td class="cd"><pre><code>sem = asyncio.Semaphore(5)
+
+async def guarded(n):
+    async with sem:
+        return await fetch(n)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Limit concurrency">Copy</button></td><td class="nt">At most five run at once; protects APIs and sockets.</td></tr><tr data-v=""><th scope="row"><span class="nm">Producer and consumer</span></th><td class="cd"><pre><code>q = asyncio.Queue()
+await q.put("job")
+item = await q.get()
+q.task_done()</code></pre><button class="copy" type="button" aria-label="Copy snippet for Producer and consumer">Copy</button></td><td class="nt">Back-pressure with <code>Queue(maxsize=n)</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Async iteration</span></th><td class="cd"><pre><code>async def ticker(n):
+    for i in range(n):
+        await asyncio.sleep(0.1)
+        yield i
+
+async def main():
+    async for tick in ticker(3):
+        print(tick)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Async iteration">Copy</button></td><td class="nt">An <code>async def</code> containing <code>yield</code> is an async generator.</td></tr><tr data-v=""><th scope="row"><span class="nm">Cancellation</span></th><td class="cd"><pre><code>try:
+    await work()
+except asyncio.CancelledError:
+    cleanup()
+    raise</code></pre><button class="copy" type="button" aria-label="Copy snippet for Cancellation">Copy</button></td><td class="nt">Always re-raise after cleanup or cancellation breaks.</td></tr></tbody></table></div></div><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">concurrency.py</span><h3>Non-blocking I/O vs threads vs processes</h3><span class="cnt">7 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">asyncio · many I/O waits</span></th><td class="cd"><pre><code>await asyncio.gather(*(fetch(u) for u in urls))</code></pre><button class="copy" type="button" aria-label="Copy snippet for asyncio · many I/O waits">Copy</button></td><td class="nt">One thread; ideal for thousands of sockets or HTTP calls.</td></tr><tr data-v=""><th scope="row"><span class="nm">Blocking call inside async</span></th><td class="cd"><pre><code>data = await asyncio.to_thread(Path("big.bin").read_bytes)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Blocking call inside async">Copy</button></td><td class="nt">Moves blocking code to a worker thread so the loop stays free.</td></tr><tr data-v=""><th scope="row"><span class="nm">Threads · blocking libraries</span></th><td class="cd"><pre><code>from concurrent.futures import ThreadPoolExecutor
+with ThreadPoolExecutor(8) as pool:
+    out = list(pool.map(fetch_sync, urls))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Threads · blocking libraries">Copy</button></td><td class="nt">Good for I/O with libraries that cannot <code>await</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Processes · CPU-bound</span></th><td class="cd"><pre><code>from concurrent.futures import ProcessPoolExecutor
+with ProcessPoolExecutor() as pool:
+    out = list(pool.map(crunch, range(8)))</code></pre><button class="copy" type="button" aria-label="Copy snippet for Processes · CPU-bound">Copy</button></td><td class="nt">Separate interpreters sidestep the GIL for real parallelism.</td></tr><tr data-v=""><th scope="row"><span class="nm">Processes from async code</span></th><td class="cd"><pre><code>loop = asyncio.get_running_loop()
+with ProcessPoolExecutor() as pool:
+    r = await loop.run_in_executor(pool, crunch, 10)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Processes from async code">Copy</button></td><td class="nt">Keeps the event loop responsive during heavy math.</td></tr><tr data-v=""><th scope="row"><span class="nm">Anti-pattern: blocking sleep</span></th><td class="cd"><pre><code>time.sleep(1)  # freezes every task</code></pre><button class="copy" type="button" aria-label="Copy snippet for Anti-pattern: blocking sleep">Copy</button></td><td class="nt">Use <code>await asyncio.sleep(1)</code>; one blocking call stalls the loop.</td></tr><tr data-v=""><th scope="row"><span class="nm">Anti-pattern: missing await</span></th><td class="cd"><pre><code>fetch(1)  # RuntimeWarning: never awaited</code></pre><button class="copy" type="button" aria-label="Copy snippet for Anti-pattern: missing await">Copy</button></td><td class="nt">Calling a coroutine only creates it; <code>await</code> actually runs it.</td></tr></tbody></table></div></div></section><section class="sec" id="sec" style="--c:var(--pink)">
+<header class="sec-head"><span class="sec-n">06</span><div><h2>High-security code defenses</h2><p>Each row pairs a legacy pattern that gets exploited with the modern replacement.</p></div></header>
+<figure class="dia"><svg viewBox="0 0 900 310" role="img" aria-label="Where untrusted input goes and the safe sink for each destination">
+<defs><marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--soft)"/></marker></defs>
+<rect class="bx" x="10" y="115" width="150" height="80" rx="10" style="stroke:var(--pink)"/><text class="t" x="85" y="148" text-anchor="middle" style="fill:var(--pink)">Untrusted</text><text class="t" x="85" y="168" text-anchor="middle" style="fill:var(--pink)">input</text>
+<g stroke="var(--soft)" stroke-width="1.5" fill="none" marker-end="url(#ar2)">
+<path d="M160 155C200 155 200 38 246 38"/><path d="M160 155C200 155 200 113 246 113"/><path d="M160 155C200 155 200 197 246 197"/><path d="M160 155C200 155 200 272 246 272"/>
+<path d="M486 38H556"/><path d="M486 113H556"/><path d="M486 197H556"/><path d="M486 272H556"/></g>
+<g>
+<rect class="bx" x="250" y="8" width="236" height="60" rx="10" style="stroke:var(--orange)"/><text class="t" x="368" y="34" text-anchor="middle" style="fill:var(--orange)">Goes into SQL</text><text class="s" x="368" y="54" text-anchor="middle">injection</text>
+<rect class="bx" x="250" y="83" width="236" height="60" rx="10" style="stroke:var(--orange)"/><text class="t" x="368" y="109" text-anchor="middle" style="fill:var(--orange)">Goes to the OS shell</text><text class="s" x="368" y="129" text-anchor="middle">command injection</text>
+<rect class="bx" x="250" y="167" width="236" height="60" rx="10" style="stroke:var(--orange)"/><text class="t" x="368" y="193" text-anchor="middle" style="fill:var(--orange)">Parsed as code or objects</text><text class="s" x="368" y="213" text-anchor="middle">remote code execution</text>
+<rect class="bx" x="250" y="242" width="236" height="60" rx="10" style="stroke:var(--orange)"/><text class="t" x="368" y="268" text-anchor="middle" style="fill:var(--orange)">Needs a token or secret</text><text class="s" x="368" y="288" text-anchor="middle">predictable values</text>
+<rect class="bx" x="560" y="8" width="330" height="60" rx="10" style="stroke:var(--green)"/><text class="m" x="725" y="43" text-anchor="middle" style="fill:var(--green)">cur.execute(sql, (value,))</text>
+<rect class="bx" x="560" y="83" width="330" height="60" rx="10" style="stroke:var(--green)"/><text class="m" x="725" y="118" text-anchor="middle" style="fill:var(--green)">subprocess.run([...], shell=False)</text>
+<rect class="bx" x="560" y="167" width="330" height="60" rx="10" style="stroke:var(--green)"/><text class="m" x="725" y="202" text-anchor="middle" style="fill:var(--green)">ast.literal_eval / json.loads</text>
+<rect class="bx" x="560" y="242" width="330" height="60" rx="10" style="stroke:var(--green)"/><text class="m" x="725" y="277" text-anchor="middle" style="fill:var(--green)">secrets.token_urlsafe(32)</text>
+</g></svg><figcaption>Match the destination of untrusted data to its safe interface. Never build the dangerous string yourself.</figcaption></figure><div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">defenses.py</span><h3>Vulnerable vs secure</h3><span class="cnt">21 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v="v"><th scope="row"><span class="nm">SQL injection</span><span class="badge" style="--c:var(--pink)">vulnerable</span></th><td class="cd"><pre><code>cur.execute(f"SELECT * FROM users WHERE name = '{name}'")</code></pre><button class="copy" type="button" aria-label="Copy snippet for SQL injection">Copy</button></td><td class="nt">String-built queries let input rewrite the SQL.</td></tr><tr data-v="s"><th scope="row"><span class="nm">SQL injection</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>cur.execute("SELECT * FROM users WHERE name = ?", (name,))</code></pre><button class="copy" type="button" aria-label="Copy snippet for SQL injection">Copy</button></td><td class="nt">Parameters travel separately; use <code>%s</code> for psycopg, <code>?</code> for sqlite3.</td></tr><tr data-v="s"><th scope="row"><span class="nm">Dynamic column names</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>ALLOWED = {"name", "age"}
+if col not in ALLOWED:
+    raise ValueError(col)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Dynamic column names">Copy</button></td><td class="nt">Identifiers cannot be parameterized, so allowlist them.</td></tr><tr data-v="v"><th scope="row"><span class="nm">Code execution</span><span class="badge" style="--c:var(--pink)">vulnerable</span></th><td class="cd"><pre><code>result = eval(user_input)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Code execution">Copy</button></td><td class="nt"><code>eval</code> and <code>exec</code> run attacker-supplied code with your privileges.</td></tr><tr data-v="s"><th scope="row"><span class="nm">Code execution</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>import ast
+value = ast.literal_eval(user_input)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Code execution">Copy</button></td><td class="nt">Accepts only literals such as numbers, strings, lists, and dicts.</td></tr><tr data-v="s"><th scope="row"><span class="nm">Dynamic dispatch</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>ops = {"add": add, "sub": sub}
+result = ops[name](x, y)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Dynamic dispatch">Copy</button></td><td class="nt">A dict of allowed callables replaces <code>eval</code> for commands.</td></tr><tr data-v="v"><th scope="row"><span class="nm">Shell commands</span><span class="badge" style="--c:var(--pink)">vulnerable</span></th><td class="cd"><pre><code>os.system("ls " + path)
+subprocess.run(f"ls {path}", shell=True)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Shell commands">Copy</button></td><td class="nt"><code>; rm -rf ~</code> in <code>path</code> becomes a second command.</td></tr><tr data-v="s"><th scope="row"><span class="nm">Shell commands</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>subprocess.run(["ls", "-l", path], shell=False, check=True, capture_output=True, text=True, timeout=10)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Shell commands">Copy</button></td><td class="nt">An argument list is never parsed by a shell.</td></tr><tr data-v="v"><th scope="row"><span class="nm">Random tokens</span><span class="badge" style="--c:var(--pink)">vulnerable</span></th><td class="cd"><pre><code>import random
+token = random.randint(0, 999999)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Random tokens">Copy</button></td><td class="nt">The Mersenne Twister is predictable; never use it for secrets.</td></tr><tr data-v="s"><th scope="row"><span class="nm">Random tokens</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>import secrets
+token = secrets.token_urlsafe(32)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Random tokens">Copy</button></td><td class="nt">Draws from the OS CSPRNG; also <code>token_hex</code> and <code>randbelow</code>.</td></tr><tr data-v="s"><th scope="row"><span class="nm">Compare secrets</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>secrets.compare_digest(a, b)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Compare secrets">Copy</button></td><td class="nt">Constant-time comparison blocks timing attacks.</td></tr><tr data-v="v"><th scope="row"><span class="nm">Deserialization</span><span class="badge" style="--c:var(--pink)">vulnerable</span></th><td class="cd"><pre><code>import pickle
+obj = pickle.loads(untrusted_bytes)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Deserialization">Copy</button></td><td class="nt">Unpickling can execute arbitrary code.</td></tr><tr data-v="s"><th scope="row"><span class="nm">Deserialization</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>obj = json.loads(untrusted_text)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Deserialization">Copy</button></td><td class="nt">JSON carries data only; use <code>yaml.safe_load</code> for YAML.</td></tr><tr data-v="v"><th scope="row"><span class="nm">Password storage</span><span class="badge" style="--c:var(--pink)">vulnerable</span></th><td class="cd"><pre><code>hashlib.md5(pw.encode()).hexdigest()</code></pre><button class="copy" type="button" aria-label="Copy snippet for Password storage">Copy</button></td><td class="nt">Fast, unsalted hashes are cracked in seconds.</td></tr><tr data-v="s"><th scope="row"><span class="nm">Password storage</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>import hashlib, os
+salt = os.urandom(16)
+key = hashlib.scrypt(pw.encode(), salt=salt, n=2**14, r=8, p=1)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Password storage">Copy</button></td><td class="nt">Salted and slow by design; argon2 or bcrypt libraries are better still.</td></tr><tr data-v="v"><th scope="row"><span class="nm">Hard-coded secrets</span><span class="badge" style="--c:var(--pink)">vulnerable</span></th><td class="cd"><pre><code>API_KEY = "sk-live-123"</code></pre><button class="copy" type="button" aria-label="Copy snippet for Hard-coded secrets">Copy</button></td><td class="nt">Anything in source control is eventually leaked.</td></tr><tr data-v="s"><th scope="row"><span class="nm">Hard-coded secrets</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>API_KEY = os.environ["API_KEY"]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Hard-coded secrets">Copy</button></td><td class="nt">Fails loudly at startup when the secret is missing.</td></tr><tr data-v="v"><th scope="row"><span class="nm">TLS verification</span><span class="badge" style="--c:var(--pink)">vulnerable</span></th><td class="cd"><pre><code>requests.get(url, verify=False)</code></pre><button class="copy" type="button" aria-label="Copy snippet for TLS verification">Copy</button></td><td class="nt">Disabling verification invites man-in-the-middle attacks.</td></tr><tr data-v="s"><th scope="row"><span class="nm">TLS verification</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>requests.get(url, timeout=5)</code></pre><button class="copy" type="button" aria-label="Copy snippet for TLS verification">Copy</button></td><td class="nt">Verification is on by default; always set a timeout.</td></tr><tr data-v="v"><th scope="row"><span class="nm">Path traversal</span><span class="badge" style="--c:var(--pink)">vulnerable</span></th><td class="cd"><pre><code>open(BASE + user_name)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Path traversal">Copy</button></td><td class="nt"><code>../../etc/passwd</code> escapes the folder.</td></tr><tr data-v="s"><th scope="row"><span class="nm">Path traversal</span><span class="badge" style="--c:var(--green)">secure</span></th><td class="cd"><pre><code>target = (BASE / user_name).resolve()
+if not target.is_relative_to(BASE.resolve()):
+    raise PermissionError(user_name)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Path traversal">Copy</button></td><td class="nt">Resolve first, then confirm the result stays inside the base.</td></tr></tbody></table></div></div></section><section class="sec" id="gotchas" style="--c:var(--yellow)">
+<header class="sec-head"><span class="sec-n">07</span><div><h2>Critical logical pitfalls</h2><p>The bugs that pass code review and fail in production.</p></div></header>
+<div class="tbl" data-lang="py">
+<div class="tbl-head"><i style="background:var(--pink)"></i><i style="background:var(--yellow)"></i><i style="background:var(--green)"></i><span class="fname">gotchas.py</span><h3>Gotchas</h3><span class="cnt">18 rows</span></div>
+<div class="tbl-scroll"><table><thead><tr><th scope="col">Operation / concept</th><th scope="col">Minimal runnable snippet</th><th scope="col">Note</th></tr></thead><tbody><tr data-v=""><th scope="row"><span class="nm">Identity vs equality</span></th><td class="cd"><pre><code>a = [1]
+b = [1]
+print(a == b)  # True
+print(a is b)  # False</code></pre><button class="copy" type="button" aria-label="Copy snippet for Identity vs equality">Copy</button></td><td class="nt"><code>==</code> compares values, <code>is</code> compares objects in memory.</td></tr><tr data-v=""><th scope="row"><span class="nm">Compare to None</span></th><td class="cd"><pre><code>if x is None:
+    ...</code></pre><button class="copy" type="button" aria-label="Copy snippet for Compare to None">Copy</button></td><td class="nt">Use <code>is</code> for singletons (<code>None</code>, <code>True</code>, <code>False</code>).</td></tr><tr data-v="b"><th scope="row"><span class="nm">Mutable default argument</span><span class="badge" style="--c:var(--pink)">bug</span></th><td class="cd"><pre><code>def add_bad(x, bucket=[]):
+    bucket.append(x)
+    return bucket</code></pre><button class="copy" type="button" aria-label="Copy snippet for Mutable default argument">Copy</button></td><td class="nt">The default list is created once and shared across calls.</td></tr><tr data-v="f"><th scope="row"><span class="nm">Mutable default argument</span><span class="badge" style="--c:var(--green)">fix</span></th><td class="cd"><pre><code>def add_good(x, bucket=None):
+    bucket = [] if bucket is None else bucket
+    bucket.append(x)
+    return bucket</code></pre><button class="copy" type="button" aria-label="Copy snippet for Mutable default argument">Copy</button></td><td class="nt">Use <code>None</code> as a sentinel and build the list inside.</td></tr><tr data-v="b"><th scope="row"><span class="nm">Local vs global scope</span><span class="badge" style="--c:var(--pink)">bug</span></th><td class="cd"><pre><code>count = 0
+
+def inc():
+    count += 1  # UnboundLocalError</code></pre><button class="copy" type="button" aria-label="Copy snippet for Local vs global scope">Copy</button></td><td class="nt">Assignment makes <code>count</code> local for the whole function.</td></tr><tr data-v="f"><th scope="row"><span class="nm">Local vs global scope</span><span class="badge" style="--c:var(--green)">fix</span></th><td class="cd"><pre><code>def inc():
+    global count
+    count += 1</code></pre><button class="copy" type="button" aria-label="Copy snippet for Local vs global scope">Copy</button></td><td class="nt">Declare <code>global</code>, or better, return a value instead.</td></tr><tr data-v="f"><th scope="row"><span class="nm">Enclosing scope</span><span class="badge" style="--c:var(--green)">fix</span></th><td class="cd"><pre><code>def counter():
+    n = 0
+    def step():
+        nonlocal n
+        n += 1
+        return n
+    return step</code></pre><button class="copy" type="button" aria-label="Copy snippet for Enclosing scope">Copy</button></td><td class="nt"><code>nonlocal</code> rebinds a variable in the enclosing function.</td></tr><tr data-v="b"><th scope="row"><span class="nm">Late-binding closures</span><span class="badge" style="--c:var(--pink)">bug</span></th><td class="cd"><pre><code>fns = [lambda: i for i in range(3)]
+print([f() for f in fns])  # [2, 2, 2]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Late-binding closures">Copy</button></td><td class="nt">Lambdas look up <code>i</code> when called, not when created.</td></tr><tr data-v="f"><th scope="row"><span class="nm">Late-binding closures</span><span class="badge" style="--c:var(--green)">fix</span></th><td class="cd"><pre><code>fns = [lambda i=i: i for i in range(3)]
+print([f() for f in fns])  # [0, 1, 2]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Late-binding closures">Copy</button></td><td class="nt">Bind the current value through a default argument.</td></tr><tr data-v="b"><th scope="row"><span class="nm">Aliased nested lists</span><span class="badge" style="--c:var(--pink)">bug</span></th><td class="cd"><pre><code>grid = [[0] * 3] * 3
+grid[0][0] = 1  # every row changes</code></pre><button class="copy" type="button" aria-label="Copy snippet for Aliased nested lists">Copy</button></td><td class="nt">Multiplication repeats the same inner list object.</td></tr><tr data-v="f"><th scope="row"><span class="nm">Aliased nested lists</span><span class="badge" style="--c:var(--green)">fix</span></th><td class="cd"><pre><code>grid = [[0] * 3 for _ in range(3)]</code></pre><button class="copy" type="button" aria-label="Copy snippet for Aliased nested lists">Copy</button></td><td class="nt">A comprehension builds a fresh list per row.</td></tr><tr data-v=""><th scope="row"><span class="nm">Mutating while iterating</span></th><td class="cd"><pre><code>for x in xs[:]:
+    if x &lt; 0:
+        xs.remove(x)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Mutating while iterating">Copy</button></td><td class="nt">Iterate a copy, or build a new list with a comprehension.</td></tr><tr data-v=""><th scope="row"><span class="nm">Float equality</span></th><td class="cd"><pre><code>import math
+math.isclose(0.1 + 0.2, 0.3)</code></pre><button class="copy" type="button" aria-label="Copy snippet for Float equality">Copy</button></td><td class="nt"><code>0.1 + 0.2 == 0.3</code> is <code>False</code> because of binary floats.</td></tr><tr data-v=""><th scope="row"><span class="nm">Exhausted generators</span></th><td class="cd"><pre><code>g = (x for x in range(3))
+list(g)
+list(g)  # []</code></pre><button class="copy" type="button" aria-label="Copy snippet for Exhausted generators">Copy</button></td><td class="nt">Generators are single-use; recreate or store in a list.</td></tr><tr data-v=""><th scope="row"><span class="nm">sort vs sorted</span></th><td class="cd"><pre><code>xs = xs.sort()  # xs is now None</code></pre><button class="copy" type="button" aria-label="Copy snippet for sort vs sorted">Copy</button></td><td class="nt"><code>list.sort()</code> returns <code>None</code>; use <code>sorted(xs)</code> for a copy.</td></tr><tr data-v=""><th scope="row"><span class="nm">Shadowing builtins</span></th><td class="cd"><pre><code>list = [1, 2]
+list("ab")  # TypeError</code></pre><button class="copy" type="button" aria-label="Copy snippet for Shadowing builtins">Copy</button></td><td class="nt">Never name variables <code>list</code>, <code>dict</code>, <code>id</code>, or <code>type</code>.</td></tr><tr data-v=""><th scope="row"><span class="nm">Broad exception handling</span></th><td class="cd"><pre><code>try:
+    risky()
+except Exception as e:
+    log.exception(e)
+    raise</code></pre><button class="copy" type="button" aria-label="Copy snippet for Broad exception handling">Copy</button></td><td class="nt">Never use bare <code>except:</code>; log and re-raise unless you can recover.</td></tr><tr data-v=""><th scope="row"><span class="nm">String building in loops</span></th><td class="cd"><pre><code>line = ",".join(parts)</code></pre><button class="copy" type="button" aria-label="Copy snippet for String building in loops">Copy</button></td><td class="nt">Repeated <code>+=</code> on strings is quadratic; <code>join</code> is linear.</td></tr></tbody></table></div></div></section>
+<p class="empty" id="empty">No rows match that search. Try a method name such as <code>popleft</code> or a concept such as <code>closure</code>.</p>
+</main>
+
+<footer><div class="wrap"><span>© 2026 Michael Legemah · Python 3.12+ reference</span><a href="https://mleg.tech" target="_blank" rel="noopener">mleg.tech</a></div></footer>
+<script>
+(function () {
+  var KW = new Set("def class return if elif else for while in not and or is import from as with try except finally raise lambda yield async await pass global nonlocal del type match case assert break continue None True False self cls".split(" "));
+  var BI = new Set("print len range list dict set tuple str int float bool sorted enumerate zip map filter sum max min open isinstance super any all abs next iter".split(" "));
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  var RX = /(#.*$)|((?:[rbfRBF]{1,2})?(?:"[^"\n]*"|'[^'\n]*'))|(@[\w.]+)|(\b\d[\d_.]*\b)|([A-Za-z_]\w*)/gm;
+  function highlight(src, lang) {
+    var out = "", last = 0, m;
+    RX.lastIndex = 0;
+    while ((m = RX.exec(src))) {
+      out += esc(src.slice(last, m.index));
+      var t = m[0], cls = "";
+      if (m[1]) cls = "tk-c";
+      else if (m[2]) cls = "tk-s";
+      else if (lang === "sh") cls = "";
+      else if (m[3]) cls = "tk-d";
+      else if (m[4]) cls = "tk-n";
+      else if (m[5]) {
+        var nextCh = src.charAt(m.index + t.length);
+        if (KW.has(t)) cls = "tk-k";
+        else if (BI.has(t)) cls = "tk-b";
+        else if (nextCh === "(") cls = /^[A-Z]/.test(t) ? "tk-b" : "tk-f";
+      }
+      out += cls ? '<span class="' + cls + '">' + esc(t) + "</span>" : esc(t);
+      last = m.index + t.length;
+    }
+    return out + esc(src.slice(last));
+  }
+  document.querySelectorAll(".tbl").forEach(function (tbl) {
+    var lang = tbl.getAttribute("data-lang");
+    tbl.querySelectorAll("pre code").forEach(function (c) { c.innerHTML = highlight(c.textContent, lang); });
+  });
+
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest(".copy"); if (!b) return;
+    var text = b.parentElement.querySelector("code").textContent;
+    function ok() { b.textContent = "Copied"; b.classList.add("done"); setTimeout(function () { b.textContent = "Copy"; b.classList.remove("done"); }, 1400); }
+    function fallback() {
+      try { var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); ok(); } catch (_) { b.textContent = "Select + copy"; }
+    }
+    try { navigator.clipboard.writeText(text).then(ok, fallback); } catch (_) { fallback(); }
+  });
+
+  var q = document.getElementById("q"), count = document.getElementById("count"), empty = document.getElementById("empty");
+  var rows = Array.prototype.slice.call(document.querySelectorAll("tbody tr"));
+  rows.forEach(function (r) { r._t = r.textContent.toLowerCase(); });
+  function apply() {
+    var v = q.value.trim().toLowerCase(), shown = 0;
+    rows.forEach(function (r) { var hit = !v || r._t.indexOf(v) !== -1; r.style.display = hit ? "" : "none"; if (hit) shown++; });
+    document.querySelectorAll(".tbl").forEach(function (t) { t.style.display = t.querySelector("tbody tr:not([style*='none'])") ? "" : "none"; });
+    document.querySelectorAll(".sec").forEach(function (s) { s.style.display = s.querySelector(".tbl:not([style*='none'])") ? "" : "none"; });
+    empty.style.display = shown ? "none" : "block";
+    count.textContent = v ? shown + " of " + rows.length + " rows" : rows.length + " rows";
+  }
+  q.addEventListener("input", apply); apply();
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "/" && document.activeElement !== q && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); q.focus(); }
+    if (e.key === "Escape" && document.activeElement === q) { q.value = ""; apply(); q.blur(); }
+  });
+})();
+
+</script>
+</body>
+</html>
